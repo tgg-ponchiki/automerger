@@ -1,9 +1,12 @@
 [tool.poetry]
 name = "automerge"
-version = "0.1.0"
+version = "0.1.1"
 description = ""
 authors = ["M9SCO <chr.grigorii@gmail.com>"]
 readme = "README.md"
+
+[tool.poetry.scripts]
+automerge = "automerge.command_line:cli"
 
 [tool.poetry.dependencies]
 python = "^3.9"
