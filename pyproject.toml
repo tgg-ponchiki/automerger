@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "automerge"
-version = "0.1.2"
+version = "0.1.3"
 description = ""
 authors = ["M9SCO <chr.grigorii@gmail.com>"]
 readme = "README.md"
