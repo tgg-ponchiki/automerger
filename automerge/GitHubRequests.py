@@ -7,7 +7,6 @@ import requests
 
 
 class GitHubRequests:
-
     def __init__(self, token, owner, repo):
         self.token = token
         self.owner = owner
@@ -20,8 +19,12 @@ class GitHubRequests:
 
         try:
             res = requests.request(method=method, url=url, headers=headers, json=json)
+            assert 200 <= res.status_code < 300
             logging.info(res.text)
             return res
+
+        except AssertionError:
+            raise requests.exceptions.RequestException(res.text)
         except:
             logging.error(traceback.format_exc())
 
@@ -88,17 +91,20 @@ class GitHubRequests:
         assert set_labels.status_code == 201
 
     def get_list_organizations(self):
-
         user = self._request(self.make_url("user"), method="GET")
         organizations = self._request(self.make_url("user/orgs"), method="GET")
         assert organizations.status_code == 200
         assert user.status_code == 200
         organizations = [org["login"] for org in json.loads(organizations.text)]
 
-        return [json.loads(user.text)["login"]] + organizations
+        return [json.loads(user.text)["login"] + "(me)"] + organizations
 
     def get_list_repositories(self, org: str):
-        repos = self._request(self.make_url(f"orgs/{org}/repos"), method="GET")
+        trgt = org.replace("(me)", "")
+
+        url = f"orgs/{trgt}/repos" if trgt == org else "user/repos"
+
+        repos = self._request(self.make_url(url), method="GET")
         assert repos.status_code == 200
         return json.loads(repos.text)
 
