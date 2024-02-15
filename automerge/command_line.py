@@ -19,12 +19,20 @@ def cli():
     requester.owner = owner
     requester.repo = repo
 
-    develop = questionary.text("Develop branch:", default="develop").unsafe_ask()
-    res = questionary.text("Resulted branch:", default=f"test/{datetime.today().strftime('%Y%m%d%H%M')}").unsafe_ask()
+    base = questionary.text("Base branch:", default="develop").unsafe_ask()
+    res = questionary.text("Resulted branch:",
+                           default=f"test/{datetime.today().strftime('%Y-%m-%d-%H-%M')}").unsafe_ask()
 
     labels = requester.get_list_labels()
     label_touching = questionary.select("Need touching branches by PR label:", choices=labels).unsafe_ask()
     label_touched = questionary.select("After touched branches set label on PR:", choices=labels).unsafe_ask()
+
+    all_pulls = requester.get_opened_pulls()
+
+    touched_pulls = list(map(lambda pull: f'"{pull["number"]}.{pull["title"]}"',
+                             filter(lambda pr: list(map(lambda label: label["name"], pr["labels"])), all_pulls)))
+
+    print(f"Detecting pulls with label \"{label_touching}\": {', '.join(touched_pulls)}")
 
     confirmed = questionary.confirm("Are you sure?").ask()
 
@@ -34,7 +42,7 @@ def cli():
     automerge = Automerge(
         owner=owner,
         repo=repo,
-        base_branch=develop,
+        base_branch=base,
         mixed_branch=res,
         need_touching=label_touching,
         touched=label_touched,
