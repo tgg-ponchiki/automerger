@@ -1,5 +1,5 @@
-from automerge.automerge import Automerge
-from automerge.GitHubRequests import GitHubRequests
+from .merger import Automerge
+from .GitHubRequests import GitHubRequests
 
 
 __all__ = ["Automerge", "GitHubRequests"]

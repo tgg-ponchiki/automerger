@@ -1,6 +1,8 @@
 import logging
 import typing
 
+import requests
+
 from automerge.GitHubRequests import GitHubRequests
 
 
@@ -43,7 +45,7 @@ class Automerge:
             self._github_requests.set_labels(pull_number=pull_num, new_label_list=labels)
             try:
                 self._github_requests.merge_pull(pull_number=transit_pr_num)
-            except AssertionError:
+            except requests.exceptions.RequestException:
                 logging.error(f"Something got wrong with merge from {transit_pr_num} to {pull_num}")
 
             # self._github_requests.merging_branch(base=self.base_branch, head=pull["head"]["ref"])
