@@ -3,15 +3,13 @@ from datetime import datetime
 
 import questionary
 
-from automerge import Automerge, GitHubRequests
-
+from automerge import GitHubRequests, Automerge
 
 def cli():
     try:
         run, github_key, *_ = sys.argv
     except ValueError:
-        print("GITHUB_TOKEN not must be null")
-        exit(1)
+        github_key = questionary.password("Write Github token with repo rights").unsafe_ask()
 
     requester = GitHubRequests(github_key, None, None)
 
