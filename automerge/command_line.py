@@ -41,3 +41,7 @@ def cli():
         github_token=github_key,
     )
     automerge.merging(automerge.get_pulls_need_touching())
+
+
+if __name__ == "__main__":
+    cli()
